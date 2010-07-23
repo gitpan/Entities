@@ -3,7 +3,7 @@ NAME
     subscription-based services.
 
 VERSION
-    version 0.1
+    version 0.2
 
 SYNOPSIS
             use Entities;
@@ -81,7 +81,7 @@ DESCRIPTION
         In other words, features are as they're named: the features of your
         app. It's your decision who gets to use them.
 
-    *   Actions (represented by Entities::Actions)
+    *   Actions (represented by Entities::Action)
 
         Actions are the core of 'ability-based authorization'. They define
         the actual activities that users can perform inside your app. For

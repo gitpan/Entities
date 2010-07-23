@@ -1,6 +1,6 @@
 package Entities::Feature;
 BEGIN {
-  $Entities::Feature::VERSION = '0.1';
+  $Entities::Feature::VERSION = '0.2';
 }
 
 use Moose;
@@ -16,7 +16,7 @@ Entities::Feature - A certain functionality, or just plan feature, that customer
 
 =head1 VERSION
 
-version 0.1
+version 0.2
 
 =head1 SYNOPSIS
 

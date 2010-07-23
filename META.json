@@ -1,0 +1,58 @@
+{
+   "abstract" : "User management and authorization for web applications and subscription-based services.",
+   "author" : [
+      "Ido Perlmuter <ido@ido50.net>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Dist::Zilla version 4.101900, CPAN::Meta::Converter version 2.101670",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "Entities",
+   "prereqs" : {
+      "configure" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "6.31"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Abilities" : 0,
+            "Abilities::Features" : 0,
+            "Carp" : 0,
+            "DateTime::Format::ISO8601" : 0,
+            "Digest::MD5" : 0,
+            "MongoDB" : 0,
+            "Moose" : 0,
+            "Moose::Role" : 0,
+            "Moose::Util::TypeConstraints" : 0,
+            "MooseX::Types::DateTime" : 0,
+            "MooseX::Types::Digest" : 0,
+            "MooseX::Types::Email" : 0,
+            "namespace::autoclean" : 0,
+            "perl" : "5.006"
+         }
+      },
+      "test" : {
+         "requires" : {
+            "Test::Moose" : 0,
+            "Test::More" : 0
+         }
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "homepage" : "http://github.com/ido50/Entities/tree",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/ido50/Entities.git",
+         "web" : "http://github.com/ido50/Entities/tree"
+      }
+   },
+   "version" : "0.2"
+}
+

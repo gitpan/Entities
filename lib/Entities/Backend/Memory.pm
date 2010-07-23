@@ -1,6 +1,6 @@
 package Entities::Backend::Memory;
 BEGIN {
-  $Entities::Backend::Memory::VERSION = '0.1';
+  $Entities::Backend::Memory::VERSION = '0.2';
 }
 
 use Moose;
@@ -17,7 +17,7 @@ Entities::Backend::Memory - A simple backend that stores all data in memory, for
 
 =head1 VERSION
 
-version 0.1
+version 0.2
 
 =head1 SYNOPSIS
 

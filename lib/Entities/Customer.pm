@@ -1,6 +1,6 @@
 package Entities::Customer;
 BEGIN {
-  $Entities::Customer::VERSION = '0.1';
+  $Entities::Customer::VERSION = '0.2';
 }
 
 use Moose;
@@ -18,7 +18,7 @@ Entities::Customer - An abstract entity that owns users and subscribes to plans.
 
 =head1 VERSION
 
-version 0.1
+version 0.2
 
 =head1 SYNOPSIS
 

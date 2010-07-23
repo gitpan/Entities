@@ -1,6 +1,6 @@
 package Entities::Backend;
 BEGIN {
-  $Entities::Backend::VERSION = '0.1';
+  $Entities::Backend::VERSION = '0.2';
 }
 
 use Moose::Role;
@@ -14,7 +14,7 @@ Entities::Backend - A role providing storage for the Entities user-management/au
 
 =head1 VERSION
 
-version 0.1
+version 0.2
 
 =head1 SYNOPSIS
 

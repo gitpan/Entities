@@ -1,16 +1,12 @@
 package Entities::Backend::MongoDB;
 BEGIN {
-  $Entities::Backend::MongoDB::VERSION = '0.1';
-}
-
-BEGIN {
-	use Carp;
-	eval { require MongoDB; };
-	croak "MongoDB must be installed in order to use Entities::Backend::MongoDB." if $@;
+  $Entities::Backend::MongoDB::VERSION = '0.2';
 }
 
 use Moose;
 use namespace::autoclean;
+use MongoDB;
+use Carp;
 use DateTime::Format::ISO8601;
 
 with 'Entities::Backend';
@@ -23,7 +19,7 @@ Entities::Backend::MongoDB - Stores all Entities data in a MongoDB database.
 
 =head1 VERSION
 
-version 0.1
+version 0.2
 
 =head1 SYNOPSIS
 

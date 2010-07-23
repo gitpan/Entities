@@ -3,11 +3,10 @@ abstract: 'User management and authorization for web applications and subscripti
 author:
   - 'Ido Perlmuter <ido@ido50.net>'
 build_requires:
-  Module::Build: 0.3601
   Test::Moose: 0
   Test::More: 0
 configure_requires:
-  Module::Build: 0.3601
+  ExtUtils::MakeMaker: 6.31
 dynamic_config: 0
 generated_by: 'Dist::Zilla version 4.101900, CPAN::Meta::Converter version 2.101670'
 license: perl
@@ -15,14 +14,13 @@ meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: 1.4
 name: Entities
-recommends:
-  MongoDB: 0
 requires:
   Abilities: 0
   Abilities::Features: 0
   Carp: 0
   DateTime::Format::ISO8601: 0
   Digest::MD5: 0
+  MongoDB: 0
   Moose: 0
   Moose::Role: 0
   Moose::Util::TypeConstraints: 0
@@ -30,7 +28,8 @@ requires:
   MooseX::Types::Digest: 0
   MooseX::Types::Email: 0
   namespace::autoclean: 0
+  perl: 5.006
 resources:
   homepage: http://github.com/ido50/Entities/tree
   repository: git://github.com/ido50/Entities.git
-version: 0.1
+version: 0.2

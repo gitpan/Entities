@@ -1,6 +1,6 @@
 package Entities::Action;
 BEGIN {
-  $Entities::Action::VERSION = '0.1';
+  $Entities::Action::VERSION = '0.2';
 }
 
 use Moose;
@@ -16,7 +16,7 @@ Entities::Action - A piece of code/functionality that a user entity can perform.
 
 =head1 VERSION
 
-version 0.1
+version 0.2
 
 =head1 SYNOPSIS
 

@@ -1,6 +1,6 @@
 package Entities::User;
 BEGIN {
-  $Entities::User::VERSION = '0.1';
+  $Entities::User::VERSION = '0.2';
 }
 
 use Moose;
@@ -20,7 +20,7 @@ Entities::User - A user entity that interacts with a web application.
 
 =head1 VERSION
 
-version 0.1
+version 0.2
 
 =head1 SYNOPSIS
 

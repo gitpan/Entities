@@ -1,6 +1,6 @@
 package Entities::Role;
 BEGIN {
-  $Entities::Role::VERSION = '0.1';
+  $Entities::Role::VERSION = '0.2';
 }
 
 use Moose;
@@ -17,7 +17,7 @@ Entities::Role - A collection of possibly related actions granted to users.
 
 =head1 VERSION
 
-version 0.1
+version 0.2
 
 =head1 SYNOPSIS
 
