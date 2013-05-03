@@ -1,16 +1,12 @@
 package Entities::User;
-BEGIN {
-  $Entities::User::VERSION = '0.2';
-}
 
-use Moose;
-use Moose::Util::TypeConstraints;
-use MooseX::Types::DateTime;
-use MooseX::Types::Digest qw/MD5/;
-use MooseX::Types::Email qw/EmailAddress/;
-use Digest::MD5 qw/md5_hex/;
-use namespace::autoclean;
 use Carp;
+use Digest::MD5 qw/md5_hex/;
+use Moo;
+use MooX::Types::MooseLike::Base qw/Any Str Bool ArrayRef/;
+use MooX::Types::MooseLike::Email qw/EmailAddress/;
+use Scalar::Util qw/blessed/;
+use namespace::autoclean;
 
 # ABSTRACT: A user entity that interacts with a web application.
 
@@ -20,7 +16,7 @@ Entities::User - A user entity that interacts with a web application.
 
 =head1 VERSION
 
-version 0.2
+version 0.3
 
 =head1 SYNOPSIS
 
@@ -67,7 +63,12 @@ internally.
 
 =cut
 
-has 'id' => (is => 'ro', isa => 'Any', predicate => 'has_id', writer => '_set_id');
+has 'id' => (
+	is => 'ro',
+	isa => Any,
+	predicate => 'has_id',
+	writer => '_set_id'
+);
 
 =head2 username()
 
@@ -79,7 +80,12 @@ Changes the username of the user to the provided name.
 
 =cut
 
-has 'username' => (is => 'ro', isa => 'Str', required => 1, writer => 'set_username');
+has 'username' => (
+	is => 'ro',
+	isa => Str,
+	required => 1,
+	writer => 'set_username'
+);
 
 =head2 realname()
 
@@ -91,7 +97,11 @@ Changes the real name of the user to the provided name.
 
 =cut
 
-has 'realname' => (is => 'ro', isa => 'Str', writer => 'set_realname');
+has 'realname' => (
+	is => 'ro',
+	isa => Str,
+	writer => 'set_realname'
+);
 
 =head2 passphrase()
 
@@ -105,19 +115,24 @@ here.
 
 =cut
 
-has 'passphrase' => (is => 'ro', isa => MD5, required => 1, writer => '_set_passphrase');
+has 'passphrase' => (
+	is => 'ro',
+	isa => Str,
+	required => 1,
+	writer => '_set_passphrase'
+);
 
 sub set_passphrase {
 	my ($self, $passphrase) = @_;
 
-	croak "You must provide a passphrase." unless $passphrase;
+	croak 'You must provide a passphrase.' unless $passphrase;
 
 	$self->_set_passphrase(md5_hex($passphrase));
 
 	return $self;
 }
 
-=head2 _roles( [\@roles] )
+=head2 roles( [\@roles] )
 
 In scalar context, returns an array-ref of all role names this user
 belongs to. In list context returns an array. If an array-ref of
@@ -129,26 +144,13 @@ Returns a true value if the user belongs to any role.
 
 =cut
 
-has '_roles' => (is => 'rw', isa => 'ArrayRef[Str]', predicate => 'has_roles');
+has 'roles' => (
+	is => 'rw',
+	isa => ArrayRef[Str],
+	predicate => 'has_roles'
+);
 
-=head2 roles()
-
-Returns an array of all role objects this user belongs to.
-
-=cut
-
-sub roles {
-	my $self = shift;
-
-	my @roles;
-	foreach ($self->_roles) {
-		push(@roles, $self->parent->get_role($_));
-	}
-
-	return @roles;
-}
-
-=head2 _actions( [\@actions] )
+=head2 actions( [\@actions] )
 
 In scalar context, returns an array-ref of all action names this user
 has been granted. In list context returns an array. If an array-ref of
@@ -160,24 +162,11 @@ Returns a true value if the user has beene explicitely granted any actions.
 
 =cut
 
-has '_actions' => (is => 'rw', isa => 'ArrayRef[Str]', predicate => 'has_actions');
-
-=head2 actions()
-
-Returns an array of all action objects this user has been granted.
-
-=cut
-
-sub actions {
-	my $self = shift;
-
-	my @actions;
-	foreach ($self->_actions) {
-		push(@actions, $self->parent->get_action($_));
-	}
-
-	return @actions;
-}
+has 'actions' => (
+	is => 'rw',
+	isa => ArrayRef[Str],
+	predicate => 'has_actions'
+);
 
 =head2 is_super()
 
@@ -186,7 +175,11 @@ can perform every possible action, in ANY SCOPE.
 
 =cut
 
-has 'is_super' => (is => 'ro', isa => 'Bool', default => 0);
+has 'is_super' => (
+	is => 'ro',
+	isa => Bool,
+	default => 0
+);
 
 =head2 customer()
 
@@ -199,7 +192,12 @@ Returns a true value if this user is a child of a customer entity.
 
 =cut
 
-has 'customer' => (is => 'ro', isa => 'Entities::Customer', weak_ref => 1, predicate => 'has_customer');
+has 'customer' => (
+	is => 'ro',
+	isa => sub { croak 'customer must be an Entities::Customer object' unless blessed $_[0] && blessed $_[0] eq 'Entities::Customer' },
+	weak_ref => 1,
+	predicate => 'has_customer'
+);
 
 =head2 emails( [\@emails] )
 
@@ -213,7 +211,11 @@ Returns a true value if the user has any emails assigned.
 
 =cut
 
-has 'emails' => (is => 'rw', isa => 'ArrayRef[Str]', predicate => 'has_emails');
+has 'emails' => (
+	is => 'rw',
+	isa => ArrayRef[Str],
+	predicate => 'has_emails'
+);
 
 =head2 created()
 
@@ -221,7 +223,11 @@ Returns a L<DateTime> object in the time the user object has been created.
 
 =cut
 
-has 'created' => (is => 'ro', isa => 'DateTime', default => sub { DateTime->now() });
+has 'created' => (
+	is => 'ro',
+	isa => sub { croak 'created must be a DateTime object' unless blessed $_[0] && blessed $_[0] eq 'DateTime' },
+	default => sub { DateTime->now() }
+);
 
 =head2 modified( [$dt] )
 
@@ -230,7 +236,11 @@ If a DateTime object is provided, it is set as the new modified value.
 
 =cut
 
-has 'modified' => (is => 'rw', isa => 'DateTime', default => sub { DateTime->now() });
+has 'modified' => (
+	is => 'rw',
+	isa => sub { croak 'modified must be a DateTime object' unless blessed $_[0] && blessed $_[0] eq 'DateTime' },
+	default => sub { DateTime->now() }
+);
 
 =head2 parent()
 
@@ -238,7 +248,11 @@ Returns the L<Entities::Backend> instance that stores this object.
 
 =cut
 
-has 'parent' => (is => 'ro', does => 'Entities::Backend', weak_ref => 1);
+has 'parent' => (
+	is => 'ro',
+	isa => sub { croak 'parent must be an Entities::Backend' unless blessed $_[0] && $_[0]->does('Entities::Backend') },
+	weak_ref => 1
+);
 
 with 'Abilities';
 
@@ -256,19 +270,19 @@ sub add_to_role {
 	croak "You must provide a role name." unless $role_name;
 
 	# does the user already belongs to this role?
-	if ($self->belongs_to($role_name)) {
+	if ($self->assigned_role($role_name)) {
 		carp "User ".$self->username." already belongs to role ".$role_name;
 		return $self;
 	}
 
 	# find this role, does it even exist?
-	my $role = $self->parent->get_role($role_name);
+	my $role = $self->get_role($role_name);
 	croak "Role $role_name does not exist." unless $role;
 
 	# add the role
-	my @roles = $self->_roles;
+	my @roles = $self->roles;
 	push(@roles, $role_name);
-	$self->_roles(\@roles);
+	$self->roles(\@roles);
 
 	return $self;
 }
@@ -287,18 +301,18 @@ sub drop_role {
 	croak "You must provide a role name." unless $role_name;
 
 	# does the user even have this role?
-	unless ($self->belongs_to($role_name)) {
+	unless ($self->assigned_role($role_name)) {
 		carp "User ".$self->username." doesn't have role $role_name.";
 		return $self;
 	}
 
 	# remove the role
 	my @roles;
-	foreach ($self->_roles) {
+	foreach ($self->roles) {
 		next if $_ eq $role_name;
 		push(@roles, $_);
 	}
-	$self->_roles(\@roles);
+	$self->roles(\@roles);
 
 	return $self;
 }
@@ -327,9 +341,9 @@ sub grant_action {
 	croak "Action $action_name does not exist." unless $action;
 
 	# add this action
-	my @actions = $self->_actions;
+	my @actions = $self->actions;
 	push(@actions, $action_name);
-	$self->_actions(\@actions);
+	$self->actions(\@actions);
 
 	return $self;
 }
@@ -349,7 +363,7 @@ sub has_direct_action {
 		return;
 	}
 
-	foreach ($self->_actions) {
+	foreach ($self->actions) {
 		return 1 if $_ eq $action_name;
 	}
 
@@ -380,11 +394,11 @@ sub drop_action {
 
 	# remove the action
 	my @actions;
-	foreach ($self->_actions) {
+	foreach ($self->actions) {
 		next if $_ eq $action_name;
 		push(@actions, $_);
 	}
-	$self->_actions(\@actions);
+	$self->actions(\@actions);
 
 	return $self;
 }
@@ -464,34 +478,28 @@ sub drop_email {
 	return $self;
 }
 
-=head1 METHODS CONSUMED FROM Abilities
+=head2 get_role( $role_name )
 
-The following methods are consumed by this class from the L<Abilities>
-Moose role. See the documentation for that role for more information on
-these methods.
+Returns the role object of the role named C<$role_name>.
 
-=head2 can_perform( $action_name | @action_names )
+=cut
 
-=head2 belongs_to( $role_name | @role_names )
-
-=head2 inherits_from_role( $role_name | @role_names )
-
-=head2 all_abilities()
+sub get_role { shift->parent->get_role(@_) }
 
 =head1 METHOD MODIFIERS
 
 The following list documents any method modifications performed through
 the magic of L<Moose>.
 
-=head2 around qw/_roles _actions emails/
+=head2 around qw/roles actions emails/
 
-If the C<_roles()>, C<_actions()> and C<emails()> methods are called with no arguments
+If the C<roles()>, C<actions()> and C<emails()> methods are called with no arguments
 and in list context - will automatically dereference the array-ref into
 arrays.
 
 =cut
 
-around qw/_roles _actions emails/ => sub {
+around qw/roles actions emails/ => sub {
 	my ($orig, $self) = (shift, shift);
 
 	if (scalar @_) {
@@ -578,7 +586,7 @@ L<http://search.cpan.org/dist/Entities/>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2010 Ido Perlmuter.
+Copyright 2010-2013 Ido Perlmuter.
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of either: the GNU General Public License as published
@@ -588,5 +596,4 @@ See http://dev.perl.org/licenses/ for more information.
 
 =cut
 
-__PACKAGE__->meta->make_immutable;
 1;

@@ -1,10 +1,7 @@
 package Entities;
-BEGIN {
-  $Entities::VERSION = '0.2';
-}
 
-use Moose;
-use namespace::autoclean;
+our $VERSION = "0.3";
+$VERSION = eval $VERSION;
 
 use Entities::User;
 use Entities::Role;
@@ -12,8 +9,8 @@ use Entities::Action;
 use Entities::Customer;
 use Entities::Plan;
 use Entities::Feature;
-
-has 'backend' => (is => 'ro', does => 'Entities::Backend', required => 1);
+use Moo;
+use namespace::autoclean;
 
 # ABSTRACT: User management and authorization for web applications and subscription-based services.
 
@@ -23,7 +20,7 @@ Entities - User management and authorization for web applications and subscripti
 
 =head1 VERSION
 
-version 0.2
+version 0.3
 
 =head1 SYNOPSIS
 
@@ -67,7 +64,7 @@ Ability-based authorization deals with six types of "entities":
 
 =over
 
-=item * Customers (represented by L<Entities::Customer>
+=item * Customers (represented by L<Entities::Customer>)
 
 A customer is an abstract entity that merely serves to unify the people
 who are actually using your app (see "users"). It can either be a person,
@@ -75,18 +72,18 @@ a company, an organization or whatever. Basically, the customer is the
 "body" that signed up for your service and possibly is paying for it. A
 customer can have 1 or more users.
 
-=item * Users (represented by L<Entities::User>
+=item * Users (represented by L<Entities::User>)
 
-A user is a person that belongs to a certain company and has received
+A user is a person that belongs to a certain customer and has received
 access to your app. They are the actual entities that are interacting with
-your application, not their parent entities (i.e. customers). Users have
+your application, not their parent customer entities. Users have
 the ability to perform actions (see later), probably only within their
-parent entity's scope (see L</"SCOPING">) and maybe to a certain limit
-(see L</"LIMITING">).
+parent entity's scope and maybe to a certain limit
+(see L</"SCOPING AND LIMITING">).
 
 =item * Plans (represented by L<Entities::Plan>)
 
-A plan is a group of features (see "features"), with certain limits and
+A plan is a group of features (see below), with certain limits and
 scoping restrictions, that customers subscribe to. You are probably familiar
 with this concept from web services you use (like GitHub, Google Apps, etc.).
 
@@ -112,7 +109,7 @@ actual activities that users can perform inside your app. For example,
 example would be 'approving comments'. Maybe even 'creating new users'.
 
 Actions, therefore, are units of "work" you define in your code. Users will
-be able to perform such unit of work only if they are granted with the 'ability'
+be able to perform such a unit of work only if they are granted with the 'ability'
 to perform the action the defines it, and only if this action is within
 the defined 'scope' and 'limit' of the parent customer. A certain ability
 can be bestowed upon a user either explicitly, or via roles (see below).
@@ -123,7 +120,7 @@ Roles might be familiar to you from 'role-based authorization'. Figuratively
 speaking, they are 'masks' that users can wear. A role is nothing but a
 group of actions. When a user is assigned a certain role, they consume
 all the actions defined in that role, and therefore the user is able to
-perform it. You will most likely find yourself creating roles such as
+perform them. You will most likely find yourself creating roles such as
 'admins', 'members', 'guests', etc.
 
 Roles are self-inheriting, i.e. a role can inherit the actions of another
@@ -156,13 +153,30 @@ Obviously, the L<Entities> system cannot do scoping and limiting for you,
 so you have to do this yourself. However, I do have plans to provide some
 simple features in upcoming releases to make these processes easier.
 
-=head1 METHODS
+=head1 ATTRIBUTES
+
+=head2 backend
+
+Holds the storage backend object. This will be an object that C<does> the
+role L<Entities::Backend>.
+
+=cut
+
+has 'backend' => (
+	is => 'ro',
+	does => 'Entities::Backend',
+	required => 1
+);
+
+=head1 CONSTRUCTOR
 
 =head2 new( backend => $backend )
 
 Creates a new instance of the Entities module. Requires a backend object
 to be used for storage (see L<Entities::Backend> for more information
 and a list of currently available backends).
+
+=head1 OBJECT METHODS
 
 =head2 new_role( name => 'somerole', [ description => 'Just some role',
 is_super => 0, roles => [], actions => [], created => $dt_obj,
@@ -171,14 +185,6 @@ modified => $other_dt_obj, parent => $entities_obj, id => 123 ] )
 Creates a new L<Entities::Role> object, stores it in the backend and
 returns it.
 
-=cut
-
-sub new_role {
-	my $self = shift;
-
-	return Entities::Role->new(@_);
-}
-
 =head2 new_user( username => 'someguy', passphrase => 's3cr3t', [ realname => 'Some Guy',
 is_super => 0, roles => [], actions => [], customer => $customer_obj, id => 123,
 emails => [], created => $dt_obj, modified => $other_dt_obj, parent => $entities_obj ] )
@@ -186,27 +192,11 @@ emails => [], created => $dt_obj, modified => $other_dt_obj, parent => $entities
 Creates a new L<Entities::User> object, stores it in the backend and
 returns it.
 
-=cut
-
-sub new_user {
-	my $self = shift;
-
-	return Entities::User->new(@_);
-}
-
 =head2 new_action( name => 'someaction', [ description => 'Just some action',
 parent => $entities_obj, id => 123 ] )
 
 Creates a new L<Entities::Action> object, stores it in the backend and
 returns it.
-
-=cut
-
-sub new_action {
-	my $self = shift;
-
-	return Entities::Action->new(@_);
-}
 
 =head2 new_plan( name => 'someplan', [ description => 'Just some plan',
 features => [], plans => [], created => $dt_obj, modified => $other_dt_obj,
@@ -215,27 +205,11 @@ parent => $entities_obj, id => 123 ] )
 Creates a new L<Entities::Plan> object, stores it in the backend and
 returns it.
 
-=cut
-
-sub new_plan {
-	my $self = shift;
-
-	return Entities::Plan->new(@_);
-}
-
 =head2 new_feature( name => 'somefeature', [ description => 'Just some feature',
 parent => $entities_obj, id => 123 ] )
 
 Creates a new L<Entities::Feature> object, stores it in the backend
 and returns it.
-
-=cut
-
-sub new_feature {
-	my $self = shift;
-
-	return Entities::Feature->new(@_);
-}
 
 =head2 new_customer( name => 'somecustomer', email_address => 'customer@customer.com',
 [ features => [], plans => [], created => $dt_obj, modified => $other_dt_obj,
@@ -246,37 +220,23 @@ and returns it.
 
 =cut
 
-sub new_customer {
-	my $self = shift;
+no strict 'refs';
+foreach my $entity (qw/role user action plan feature customer/) {
+	*{"new_$entity"} = sub {
+		my $self = shift;
 
-	return Entities::Customer->new(@_);
+		# create a new object
+		my $class = 'Entities::'.ucfirst($entity);
+		push(@_, parent => $self->backend);
+		my $obj = $class->new(@_);
+
+		# save object in storage backend
+		$self->backend->save($obj);
+
+		return $obj;
+	};
 }
-
-=head1 METHOD MODIFIERS
-
-The following list documents any method modifications performed through
-the magic of L<Moose>.
-
-=head2 around qr/^new_.+$/
-
-This method modifier is used when any of the above C<new_something> methods
-are invoked. It is used to automatically pass the Entities object to the
-newly created object (as the 'parent' attribute), and to automatically
-save the object in the backend.
-
-=cut
-
-around qr/^new_.+$/ => sub {
-	my ($orig, $self) = (shift, shift);
-
-	push(@_, parent => $self->backend);
-
-	my $obj = $self->$orig(@_);
-
-	$self->backend->save($obj);
-
-	return $obj;
-};
+use strict 'refs';
 
 =head1 SEE ALSO
 
@@ -322,7 +282,7 @@ L<http://search.cpan.org/dist/Entities/>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2010 Ido Perlmuter.
+Copyright 2010-2013 Ido Perlmuter.
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of either: the GNU General Public License as published
@@ -332,5 +292,4 @@ See http://dev.perl.org/licenses/ for more information.
 
 =cut
 
-__PACKAGE__->meta->make_immutable;
 1;

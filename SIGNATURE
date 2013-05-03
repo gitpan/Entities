@@ -1,0 +1,49 @@
+This file contains message digests of all files listed in MANIFEST,
+signed via the Module::Signature module, version 0.70.
+
+To verify the content in this distribution, first make sure you have
+Module::Signature installed, then type:
+
+    % cpansign -v
+
+It will check each file's integrity, as well as the signature's
+validity.  If "==> Signature verified OK! <==" is not displayed,
+the distribution may already have been compromised, and you should
+not run its Makefile.PL or Build.PL.
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+SHA1 5d4084650fd6645b2043983a748c694760714b20 Changes
+SHA1 3b4433c7ad6cf398b52d2c2f5d6317a3f384f4b9 INSTALL
+SHA1 4dceae0eaef7a9ac83dea9d378c954bfce55223a LICENSE
+SHA1 89810e63aaf7390bd917c7a87b8fc65de9d507de MANIFEST
+SHA1 f8357f7b046c28a09035303250535ecc7c68c2f3 MANIFEST.SKIP
+SHA1 afb225e4c155690bf7b0fd73f72b1373878d32ba META.json
+SHA1 9ea0049738b46d8f5645d974441b77b6fe7f8386 META.yml
+SHA1 e6043b9aaeedf83d93a11a562482ef190564320b Makefile.PL
+SHA1 6c7d3f7ad49ad1817b682dec8fc1e0a9abc76b1d README
+SHA1 9feb108a56041be9953182cf9b7075a587b8b1bb dist.ini
+SHA1 f3d5a0d030a449c26a20a72299b7551934b480b2 lib/Entities.pm
+SHA1 688f00721604592530707edfdd842a1e79bb1594 lib/Entities/Action.pm
+SHA1 b11e21ddb4f29175f79dd53a19a00c5b6e04b830 lib/Entities/Backend.pm
+SHA1 6fd8fa5ddb1d399b9a35922853f5c2c43ca6940b lib/Entities/Backend/Memory.pm
+SHA1 ea363efb65d17092fc46c1e4d6aec7bfd7590332 lib/Entities/Backend/MongoDB.pm
+SHA1 f20a3073e8879acb595c677de8e9351eac49be84 lib/Entities/Customer.pm
+SHA1 e14286be96a3b26df6e4f24322fd221354d0e28f lib/Entities/Feature.pm
+SHA1 e2ea55433e7632aa6fe8ecf5617eba4ff8bbd094 lib/Entities/Plan.pm
+SHA1 68b7f646b2148169ebcf1b76750b9a14c33adfc3 lib/Entities/Role.pm
+SHA1 a36881ad798a41c85c8f2ff349d620e23f06bbcd lib/Entities/User.pm
+SHA1 00bc4124468135e46960b160cae089e67d8765c8 t/00-load.t
+SHA1 81ce5eb6f473055439a8d902872d89a0846030f6 t/01-memory.t
+SHA1 82afdb9872079094cf5d76c95ba829a05e0efcea t/02-mongodb.t
+SHA1 87768d177f8c2e2df9c591cde869e7c8a245555e t/release-dist-manifest.t
+SHA1 9433c240fe590bc404ab68ff63984df763e347ed t/release-pod-coverage.t
+SHA1 b30cbdfaf935017c4568c0c91b242438cb87786e t/release-pod-syntax.t
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.19 (GNU/Linux)
+
+iF4EAREIAAYFAlGD++oACgkQa4OHQAFM10frzQD/R4v2ZseBElicoQlUruozGB5D
+6+ghOivS9YbSb4sPnCwA/jlVrhQ/Tx98RQ6kPvHMwOGOS9r63y37JDqvsPz8QhHo
+=QRrz
+-----END PGP SIGNATURE-----

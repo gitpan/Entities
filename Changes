@@ -1,5 +1,10 @@
 Revision history for Entities
 
+0.3       2013-05-03 21:03:00 Asia/Jerusalem
+	- Updated to reflect changes introduced in Abilities v0.5
+	- Moved from Moose to Moo
+	- Now using MongoDB::MongoClient instead of MongoDB::Connection
+
 0.2       2010-07-23 19:37:13 Asia/Jerusalem
 	- MongoDB is now a requirement
 	- Fixed bug that cause mongodb test to fail

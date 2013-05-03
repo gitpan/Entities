@@ -1,11 +1,9 @@
 package Entities::Action;
-BEGIN {
-  $Entities::Action::VERSION = '0.2';
-}
 
-use Moose;
-use Moose::Util::TypeConstraints;
-use MooseX::Types::DateTime;
+use Carp;
+use Moo;
+use MooX::Types::MooseLike::Base qw/Any Str/;
+use Scalar::Util qw/blessed/;
 use namespace::autoclean;
 
 # ABSTRACT: A piece of code/functionality that a user entity can perform.
@@ -16,7 +14,7 @@ Entities::Action - A piece of code/functionality that a user entity can perform.
 
 =head1 VERSION
 
-version 0.2
+version 0.3
 
 =head1 SYNOPSIS
 
@@ -53,7 +51,12 @@ internally.
 
 =cut
 
-has 'id' => (is => 'ro', isa => 'Any', predicate => 'has_id', writer => '_set_id');
+has 'id' => (
+	is => 'ro',
+	isa => Any,
+	predicate => 'has_id',
+	writer => '_set_id'
+);
 
 =head2 name()
 
@@ -61,7 +64,11 @@ Returns the name of the action.
 
 =cut
 
-has 'name' => (is => 'ro', isa => 'Str', required => 1);
+has 'name' => (
+	is => 'ro',
+	isa => Str,
+	required => 1
+);
 
 =head2 description()
 
@@ -73,7 +80,11 @@ Changes the description of the object to the provided value.
 
 =cut
 
-has 'description' => (is => 'ro', isa => 'Str', writer => 'set_description');
+has 'description' => (
+	is => 'ro',
+	isa => Str,
+	writer => 'set_description'
+);
 
 =head2 created()
 
@@ -82,7 +93,11 @@ created.
 
 =cut
 
-has 'created' => (is => 'ro', isa => 'DateTime', default => sub { DateTime->now() });
+has 'created' => (
+	is => 'ro',
+	isa => sub { croak 'created must be a DateTime object' unless blessed $_[0] && blessed $_[0] eq 'DateTime' },
+	default => sub { DateTime->now() }
+);
 
 =head2 modified( [$dt] )
 
@@ -92,7 +107,11 @@ value of this attribute.
 
 =cut
 
-has 'modified' => (is => 'rw', isa => 'DateTime', default => sub { DateTime->now() });
+has 'modified' => (
+	is => 'rw',
+	isa => sub { croak 'modified must be a DateTime object' unless blessed $_[0] && blessed $_[0] eq 'DateTime' },
+	default => sub { DateTime->now() }
+);
 
 =head2 parent()
 
@@ -100,7 +119,11 @@ Returns the L<Entities::Backend> instance that stores this object.
 
 =cut
 
-has 'parent' => (is => 'ro', does => 'Entities::Backend', weak_ref => 1);
+has 'parent' => (
+	is => 'ro',
+	isa => sub { croak 'parent must be an Entities::Backend' unless blessed $_[0] && $_[0]->does('Entities::Backend') },
+	weak_ref => 1
+);
 
 =head1 METHOD MODIFIERS
 
@@ -164,7 +187,7 @@ L<http://search.cpan.org/dist/Entities/>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2010 Ido Perlmuter.
+Copyright 2010-2013 Ido Perlmuter.
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of either: the GNU General Public License as published
@@ -174,5 +197,4 @@ See http://dev.perl.org/licenses/ for more information.
 
 =cut
 
-__PACKAGE__->meta->make_immutable;
 1;

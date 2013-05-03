@@ -1,9 +1,6 @@
 package Entities::Backend;
-BEGIN {
-  $Entities::Backend::VERSION = '0.2';
-}
 
-use Moose::Role;
+use Moo::Role;
 use namespace::autoclean;
 
 # ABSTRACT: A role providing storage for the Entities user-management/authorization system.
@@ -14,7 +11,7 @@ Entities::Backend - A role providing storage for the Entities user-management/au
 
 =head1 VERSION
 
-version 0.2
+version 0.3
 
 =head1 SYNOPSIS
 
@@ -106,10 +103,11 @@ requires 'get_customer';
 
 =head2 save( $obj )
 
-Receives a new entity object (either L<User|Entities::User>, L<Role|Entities::Role>,
+Receives a new or existing entity object (either L<User|Entities::User>, L<Role|Entities::Role>,
 L<Action|Entities::Action>, L<Plan|Entities::Plan>, L<Customer|Entities::Customer>
 or L<Feature|Entities::Feature>) and saves it to the backend. Should return
-a true value if the save was successful or croak otherwise.
+a true value if the save was successful or croak otherwise. To make it clear,
+this method should insert new objects and update existing ones.
 
 =cut
 
@@ -159,7 +157,7 @@ L<http://search.cpan.org/dist/Entities/>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2010 Ido Perlmuter.
+Copyright 2010-2013 Ido Perlmuter.
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of either: the GNU General Public License as published

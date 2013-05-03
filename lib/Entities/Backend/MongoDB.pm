@@ -1,13 +1,12 @@
 package Entities::Backend::MongoDB;
-BEGIN {
-  $Entities::Backend::MongoDB::VERSION = '0.2';
-}
 
-use Moose;
-use namespace::autoclean;
-use MongoDB;
 use Carp;
 use DateTime::Format::ISO8601;
+use MongoDB;
+use Moo;
+use MooX::Types::MooseLike::Base qw/Str Int/;
+use Scalar::Util qw/blessed/;
+use namespace::autoclean;
 
 with 'Entities::Backend';
 
@@ -19,7 +18,7 @@ Entities::Backend::MongoDB - Stores all Entities data in a MongoDB database.
 
 =head1 VERSION
 
-version 0.2
+version 0.3
 
 =head1 SYNOPSIS
 
@@ -38,7 +37,7 @@ backend right now that can be used in production environments.
 
 A big advantage of using this backend is that there is no setup work
 necessary. Just make sure your MongoDB daemon is running, and this
-backend will automatically created the database and necessary collections.
+backend will automatically create the database and necessary collections.
 
 =head1 UNIQUE METHODS
 
@@ -47,7 +46,7 @@ The following method are unique to this backend only.
 =head2 new( [host => 'localhost', port => 27017, db_name => 'entities'] )
 
 Creates a new instance of this module. Can receive the hostname of the server
-running the MongoDB daemon, the port on thiat host where the daemon is
+running the MongoDB daemon, the port on that host where the daemon is
 listening, and the name of the database to use. None of these parameters
 is required, host will default to 'localhost', port will default to 27017
 (the default MongoDB port) and db_name will default to 'entities'.
@@ -58,7 +57,11 @@ Returns the host name or IP of the MongoDB server.
 
 =cut
 
-has 'host' => (is => 'ro', isa => 'Str', default => 'localhost');
+has 'host' => (
+	is => 'ro',
+	isa => Str,
+	default => 'localhost'
+);
 
 =head2 port()
 
@@ -66,7 +69,11 @@ Returns the port number on the host where the MongoDB server listens.
 
 =cut
 
-has 'port' => (is => 'ro', isa => 'Int', default => 27017);
+has 'port' => (
+	is => 'ro',
+	isa => Int,
+	default => sub { 27017 }
+);
 
 =head2 db_name()
 
@@ -74,7 +81,11 @@ Returns the name of the database into which all data is saved.
 
 =cut
 
-has 'db_name' => (is => 'ro', isa => 'Str', default => 'entities');
+has 'db_name' => (
+	is => 'ro',
+	isa => Str,
+	default => 'entities'
+);
 
 =head2 db( [$db_obj] )
 
@@ -84,7 +95,10 @@ the current object.
 
 =cut
 
-has 'db' => (is => 'rw', isa => 'MongoDB::Database');
+has 'db' => (
+	is => 'rw',
+	isa => sub { croak 'db must be a MongoDB::Database object' unless blessed $_[0] && blessed $_[0] eq 'MongoDB::Database' }
+);
 
 =head2 to_hash( $obj )
 
@@ -106,8 +120,8 @@ sub to_hash {
 			is_super => $obj->is_super ? 1 : 0,
 			created => $obj->created->datetime,
 			modified => $obj->modified->datetime,
-			actions => [$obj->_actions],
-			roles => [$obj->_roles],
+			actions => [$obj->actions],
+			roles => [$obj->roles],
 			emails => [$obj->emails],
 			customer => $obj->customer ? $obj->customer->name : undef,
 		};
@@ -118,8 +132,8 @@ sub to_hash {
 			is_super => $obj->is_super ? 1 : 0,
 			created => $obj->created->datetime,
 			modified => $obj->modified->datetime,
-			actions => [$obj->_actions],
-			roles => [$obj->_roles],
+			actions => [$obj->actions],
+			roles => [$obj->roles],
 		};
 	} elsif ($obj->isa('Entities::Action') || $obj->isa('Entities::Feature')) {
 		return {
@@ -134,8 +148,8 @@ sub to_hash {
 			email_address => $obj->email_address,
 			created => $obj->created->datetime,
 			modified => $obj->modified->datetime,
-			features => [$obj->_features],
-			plans => [$obj->_plans],
+			features => [$obj->features],
+			plans => [$obj->plans],
 		};
 	} elsif ($obj->isa('Entities::Plan')) {
 		return {
@@ -143,8 +157,8 @@ sub to_hash {
 			description => $obj->description,
 			created => $obj->created->datetime,
 			modified => $obj->modified->datetime,
-			features => [$obj->_features],
-			plans => [$obj->_plans],
+			features => [$obj->features],
+			plans => [$obj->plans],
 		};
 	} else {
 		croak "Received an object that doesn't belong to the Entities family.";
@@ -168,7 +182,7 @@ sub get_user_from_id {
 	return unless $user;
 
 	# turn this into an object
-	return Entities::User->new(id => $user->{_id}, username => $user->{username}, realname => $user->{realname}, customer => $user->{customer} ? $self->get_customer($user->{customer}) : undef, passphrase => $user->{passphrase}, is_super => $user->{is_super}, _roles => $user->{roles}, _actions => $user->{actions}, emails => $user->{emails}, created => DateTime::Format::ISO8601->parse_datetime($user->{created}), modified => DateTime::Format::ISO8601->parse_datetime($user->{modified}), parent => $self);
+	return Entities::User->new(id => $user->{_id}, username => $user->{username}, realname => $user->{realname}, customer => $user->{customer} ? $self->get_customer($user->{customer}) : undef, passphrase => $user->{passphrase}, is_super => $user->{is_super}, roles => $user->{roles}, actions => $user->{actions}, emails => $user->{emails}, created => DateTime::Format::ISO8601->parse_datetime($user->{created}), modified => DateTime::Format::ISO8601->parse_datetime($user->{modified}), parent => $self);
 }
 
 =head2 get_user_from_name( $username )
@@ -182,7 +196,7 @@ sub get_user_from_name {
 	return unless $user;
 
 	# turn this into an object
-	return Entities::User->new(id => $user->{_id}, username => $user->{username}, realname => $user->{realname}, customer => $user->{customer} ? $self->get_customer($user->{customer}) : undef, passphrase => $user->{passphrase}, is_super => $user->{is_super}, _roles => $user->{roles}, _actions => $user->{actions}, emails => $user->{emails}, created => DateTime::Format::ISO8601->parse_datetime($user->{created}), modified => DateTime::Format::ISO8601->parse_datetime($user->{modified}), parent => $self);
+	return Entities::User->new(id => $user->{_id}, username => $user->{username}, realname => $user->{realname}, customer => $user->{customer} ? $self->get_customer($user->{customer}) : undef, passphrase => $user->{passphrase}, is_super => $user->{is_super}, roles => $user->{roles}, actions => $user->{actions}, emails => $user->{emails}, created => DateTime::Format::ISO8601->parse_datetime($user->{created}), modified => DateTime::Format::ISO8601->parse_datetime($user->{modified}), parent => $self);
 }
 
 =head2 get_role( $role_name )
@@ -198,7 +212,7 @@ sub get_role {
 	# turn this into an object
 	$role->{description} ||= '';
 
-	return Entities::Role->new(id => $role->{_id}, name => $role->{name}, description => $role->{description}, is_super => $role->{is_super}, _roles => $role->{roles}, _actions => $role->{actions}, created => DateTime::Format::ISO8601->parse_datetime($role->{created}), modified => DateTime::Format::ISO8601->parse_datetime($role->{modified}), parent => $self);
+	return Entities::Role->new(id => $role->{_id}, name => $role->{name}, description => $role->{description}, is_super => $role->{is_super}, roles => $role->{roles}, actions => $role->{actions}, created => DateTime::Format::ISO8601->parse_datetime($role->{created}), modified => DateTime::Format::ISO8601->parse_datetime($role->{modified}), parent => $self);
 }
 
 =head2 get_customer( $customer_name )
@@ -212,7 +226,7 @@ sub get_customer {
 	return unless $customer;
 	
 	# turn this into an object
-	return Entities::Customer->new(id => $customer->{_id}, name => $customer->{name}, email_address => $customer->{email_address}, _features => $customer->{features}, _plans => $customer->{plans}, created => DateTime::Format::ISO8601->parse_datetime($customer->{created}), modified => DateTime::Format::ISO8601->parse_datetime($customer->{modified}), parent => $self);
+	return Entities::Customer->new(id => $customer->{_id}, name => $customer->{name}, email_address => $customer->{email_address}, features => $customer->{features}, plans => $customer->{plans}, created => DateTime::Format::ISO8601->parse_datetime($customer->{created}), modified => DateTime::Format::ISO8601->parse_datetime($customer->{modified}), parent => $self);
 }
 
 =head2 get_plan( $plan_name )
@@ -228,7 +242,7 @@ sub get_plan {
 	# turn this into an object
 	$plan->{description} ||= '';
 
-	return Entities::Plan->new(id => $plan->{_id}, name => $plan->{name}, description => $plan->{description}, _features => $plan->{features}, _plans => $plan->{plans}, created => DateTime::Format::ISO8601->parse_datetime($plan->{created}), modified => DateTime::Format::ISO8601->parse_datetime($plan->{modified}), parent => $self);
+	return Entities::Plan->new(id => $plan->{_id}, name => $plan->{name}, description => $plan->{description}, features => $plan->{features}, plans => $plan->{plans}, created => DateTime::Format::ISO8601->parse_datetime($plan->{created}), modified => DateTime::Format::ISO8601->parse_datetime($plan->{modified}), parent => $self);
 }
 
 =head2 get_feature( $feature_name )
@@ -320,7 +334,11 @@ and store it in the object.
 sub BUILD {
 	my $self = shift;
 
-	my $connection = MongoDB::Connection->new(host => $self->host, port => $self->port);	
+	my $connection = MongoDB::MongoClient->new(
+		host => $self->host,
+		port => $self->port
+	);
+
 	$self->db($connection->get_database($self->db_name));
 }
 
@@ -368,7 +386,7 @@ L<http://search.cpan.org/dist/Entities/>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2010 Ido Perlmuter.
+Copyright 2010-2013 Ido Perlmuter.
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of either: the GNU General Public License as published
@@ -378,5 +396,4 @@ See http://dev.perl.org/licenses/ for more information.
 
 =cut
 
-__PACKAGE__->meta->make_immutable;
 1;

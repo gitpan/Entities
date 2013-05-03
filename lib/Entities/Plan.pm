@@ -1,13 +1,10 @@
 package Entities::Plan;
-BEGIN {
-  $Entities::Plan::VERSION = '0.2';
-}
 
-use Moose;
-use Moose::Util::TypeConstraints;
-use MooseX::Types::DateTime;
-use namespace::autoclean;
 use Carp;
+use Moo;
+use MooX::Types::MooseLike::Base qw/Any Str ArrayRef/;
+use Scalar::Util qw/blessed/;
+use namespace::autoclean;
 
 # ABSTRACT: A collection of features (possibly scoped and limited) customers can subscribe to.
 
@@ -17,7 +14,7 @@ Entities::Plan - A collection of features (possibly scoped and limited) customer
 
 =head1 VERSION
 
-version 0.2
+version 0.3
 
 =head1 SYNOPSIS
 
@@ -59,7 +56,12 @@ internally.
 
 =cut
 
-has 'id' => (is => 'ro', isa => 'Any', predicate => 'has_id', writer => '_set_id');
+has 'id' => (
+	is => 'ro',
+	isa => Any,
+	predicate => 'has_id',
+	writer => '_set_id'
+);
 
 =head2 name()
 
@@ -67,7 +69,11 @@ Returns the name of the plan.
 
 =cut
 
-has 'name' => (is => 'ro', isa => 'Str', required => 1);
+has 'name' => (
+	is => 'ro',
+	isa => Str,
+	required => 1
+);
 
 =head2 description()
 
@@ -79,9 +85,13 @@ Changes the description of the object to the provided value.
 
 =cut
 
-has 'description' => (is => 'ro', isa => 'Str', writer => 'set_description');
+has 'description' => (
+	is => 'ro',
+	isa => Str,
+	writer => 'set_description'
+);
 
-=head2 _features( [\@features] )
+=head2 features( [\@features] )
 
 In scalar context, returns an array-ref of all feature names this plan
 directly has. In list context returns an array. If an array-ref of feature
@@ -93,26 +103,13 @@ Returns a true value if the plan has been assigned any features.
 
 =cut
 
-has '_features' => (is => 'rw', isa => 'ArrayRef[Str]', predicate => 'has_features');
+has 'features' => (
+	is => 'rw',
+	isa => ArrayRef[Str],
+	predicate => 'has_features'
+);
 
-=head2 features()
-
-Returns an array of all feature objects this plan has.
-
-=cut
-
-sub features {
-	my $self = shift;
-
-	my @features;
-	foreach ($self->_features) {
-		push(@features, $self->parent->get_feature($_));
-	}
-
-	return @features;
-}
-
-=head2 _plans( [\@plans] )
+=head2 plans( [\@plans] )
 
 In scalar context, returns an array-ref of plan names this plan inherits
 from. In list context returns an array. If an array-ref of plan names
@@ -124,24 +121,11 @@ Returns a true value if the plan object inherits from any other plan.
 
 =cut
 
-has '_plans' => (is => 'rw', isa => 'ArrayRef[Str]', predicate => 'has_plans');
-
-=head2 plans()
-
-Returns an array of all plan objects this plan inherits from.
-
-=cut
-
-sub plans {
-	my $self = shift;
-
-	my @plans;
-	foreach ($self->_plans) {
-		push(@plans, $self->parent->get_plan($_));
-	}
-
-	return @plans;
-}
+has 'plans' => (
+	is => 'rw',
+	isa => ArrayRef[Str],
+	predicate => ['has_plans']
+);
 
 =head2 created()
 
@@ -149,7 +133,11 @@ Returns a L<DateTime> object in the time the plan object has been created.
 
 =cut
 
-has 'created' => (is => 'ro', isa => 'DateTime', default => sub { DateTime->now() });
+has 'created' => (
+	is => 'ro',
+	isa => sub { croak 'created must be a DateTime object' unless blessed $_[0] && blessed $_[0] eq 'DateTime' },
+	default => sub { DateTime->now() }
+);
 
 =head2 modified( [$dt] )
 
@@ -158,7 +146,11 @@ If a DateTime object is provided, it is set as the new modified value.
 
 =cut
 
-has 'modified' => (is => 'rw', isa => 'DateTime', default => sub { DateTime->now() });
+has 'modified' => (
+	is => 'rw',
+	isa => sub { croak 'modified must be a DateTime object' unless blessed $_[0] && blessed $_[0] eq 'DateTime' },
+	default => sub { DateTime->now() }
+);
 
 =head2 parent()
 
@@ -166,7 +158,11 @@ Returns the L<Entities::Backend> instance that stores this object.
 
 =cut
 
-has 'parent' => (is => 'ro', does => 'Entities::Backend', weak_ref => 1);
+has 'parent' => (
+	is => 'ro',
+	isa => sub { croak 'parent must be an Entities::Backend' unless blessed $_[0] && $_[0]->does('Entities::Backend') },
+	weak_ref => 1
+);
 
 with 'Abilities::Features';
 
@@ -194,9 +190,9 @@ sub add_feature {
 	croak "feature $feature_name does not exist." unless $feature;
 
 	# add this feature
-	my @features = $self->_features;
+	my @features = $self->features;
 	push(@features, $feature_name);
-	$self->_features(\@features);
+	$self->features(\@features);
 
 	return $self;
 }
@@ -226,11 +222,11 @@ sub drop_feature {
 
 	# remove the feature
 	my @features;
-	foreach ($self->_features) {
+	foreach ($self->features) {
 		next if $_ eq $feature_name;
 		push(@features, $_);
 	}
-	$self->_features(\@features);
+	$self->features(\@features);
 
 	return $self;
 }
@@ -251,7 +247,7 @@ sub has_direct_feature {
 	}
 
 	# find the feature
-	foreach ($self->_features) {
+	foreach ($self->features) {
 		return 1 if $_ eq $feature_name;
 	}
 
@@ -279,13 +275,13 @@ sub take_from_plan {
 	}
 
 	# find the plan, does it even exist?
-	my $plan = $self->parent->get_plan($plan_name);
+	my $plan = $self->get_plan($plan_name);
 	croak "plan $plan_name does not exist." unless $plan;
 
 	# add the plan
-	my @plans = $self->_plans;
+	my @plans = $self->plans;
 	push(@plans, $plan_name);
-	$self->_plans(\@plans);
+	$self->plans(\@plans);
 
 	return $self;
 }
@@ -313,43 +309,37 @@ sub dont_take_from_plan {
 
 	# remove the plan
 	my @plans;
-	foreach ($self->_plans) {
+	foreach ($self->plans) {
 		next if $_ eq $plan_name;
 		push(@plans, $_);
 	}
-	$self->_plans(\@plans);
+	$self->plans(\@plans);
 
 	return $self;
 }
 
-=head1 METHODS CONSUMED FROM Abilities::Features
+=head2 get_plan( $plan_name )
 
-The following methods are consumed by this class from the L<Abilities::Features>
-Moose role. See the documentation for that role for more information on
-these methods.
+Returns the plan object of the plan named C<$plan_name>.
 
-=head2 has_feature( $feature_name | @feature_names )
+=cut
 
-=head2 in_plan( $plan_name | @plan_names )
-
-=head2 inherits_from_plan( $plan_name | @plan_names )
-
-=head2 all_features()
+sub get_plan { shift->parent->get_plan(@_) }
 
 =head1 METHOD MODIFIERS
 
 The following list documents any method modifications performed through
 the magic of L<Moose>.
 
-=head2 around qw/_plans _features/
+=head2 around qw/plans features/
 
-If the C<_plans()> and C<_features()> methods are called with no arguments
+If the C<plans()> and C<features()> methods are called with no arguments
 and in list context - will automatically dereference the array-ref into
 arrays.
 
 =cut
 
-around qw/_plans _features/ => sub {
+around qw/plans features/ => sub {
 	my ($orig, $self) = (shift, shift);
 
 	if (scalar @_) {
@@ -418,7 +408,7 @@ L<http://search.cpan.org/dist/Entities/>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2010 Ido Perlmuter.
+Copyright 2010-2013 Ido Perlmuter.
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of either: the GNU General Public License as published
@@ -428,5 +418,4 @@ See http://dev.perl.org/licenses/ for more information.
 
 =cut
 
-__PACKAGE__->meta->make_immutable;
 1;
