@@ -1,5 +1,8 @@
 package Entities::Backend;
 
+our $VERSION = "0.4";
+$VERSION = eval $VERSION;
+
 use Moo::Role;
 use namespace::autoclean;
 
@@ -11,7 +14,7 @@ Entities::Backend - A role providing storage for the Entities user-management/au
 
 =head1 VERSION
 
-version 0.3
+version 0.4
 
 =head1 SYNOPSIS
 

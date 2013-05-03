@@ -1,5 +1,8 @@
 package Entities::Action;
 
+our $VERSION = "0.4";
+$VERSION = eval $VERSION;
+
 use Carp;
 use Moo;
 use MooX::Types::MooseLike::Base qw/Any Str/;
@@ -14,7 +17,7 @@ Entities::Action - A piece of code/functionality that a user entity can perform.
 
 =head1 VERSION
 
-version 0.3
+version 0.4
 
 =head1 SYNOPSIS
 

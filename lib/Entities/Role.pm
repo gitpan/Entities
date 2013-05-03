@@ -1,5 +1,8 @@
 package Entities::Role;
 
+our $VERSION = "0.4";
+$VERSION = eval $VERSION;
+
 use Carp;
 use Moo;
 use MooX::Types::MooseLike::Base qw/Any Str Bool ArrayRef/;
@@ -14,7 +17,7 @@ Entities::Role - A collection of possibly related actions granted to users.
 
 =head1 VERSION
 
-version 0.3
+version 0.4
 
 =head1 SYNOPSIS
 

@@ -1,5 +1,8 @@
 package Entities::Feature;
 
+our $VERSION = "0.4";
+$VERSION = eval $VERSION;
+
 use Carp;
 use Moo;
 use MooX::Types::MooseLike::Base qw/Any Str/;
@@ -14,7 +17,7 @@ Entities::Feature - A certain functionality, or just plan feature, that customer
 
 =head1 VERSION
 
-version 0.3
+version 0.4
 
 =head1 SYNOPSIS
 

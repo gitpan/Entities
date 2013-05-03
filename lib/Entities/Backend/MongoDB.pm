@@ -1,5 +1,8 @@
 package Entities::Backend::MongoDB;
 
+our $VERSION = "0.4";
+$VERSION = eval $VERSION;
+
 use Carp;
 use DateTime::Format::ISO8601;
 use MongoDB;
@@ -18,7 +21,7 @@ Entities::Backend::MongoDB - Stores all Entities data in a MongoDB database.
 
 =head1 VERSION
 
-version 0.3
+version 0.4
 
 =head1 SYNOPSIS
 

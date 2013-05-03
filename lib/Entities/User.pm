@@ -1,5 +1,8 @@
 package Entities::User;
 
+our $VERSION = "0.4";
+$VERSION = eval $VERSION;
+
 use Carp;
 use Digest::MD5 qw/md5_hex/;
 use Moo;
@@ -16,7 +19,7 @@ Entities::User - A user entity that interacts with a web application.
 
 =head1 VERSION
 
-version 0.3
+version 0.4
 
 =head1 SYNOPSIS
 

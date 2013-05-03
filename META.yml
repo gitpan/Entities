@@ -33,4 +33,4 @@ requires:
 resources:
   homepage: https://github.com/ido50/Entities
   repository: https://github.com/ido50/Entities.git
-version: 0.3
+version: 0.4

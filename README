@@ -3,7 +3,7 @@ NAME
     subscription-based services.
 
 VERSION
-    version 0.3
+    version 0.4
 
 SYNOPSIS
             use Entities;

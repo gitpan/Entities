@@ -1,5 +1,8 @@
 package Entities::Backend::Memory;
 
+our $VERSION = "0.4";
+$VERSION = eval $VERSION;
+
 use Carp;
 use Moo;
 use MooX::Types::MooseLike::Base qw/ArrayRef/;
@@ -15,7 +18,7 @@ Entities::Backend::Memory - A simple backend that stores all data in memory, for
 
 =head1 VERSION
 
-version 0.3
+version 0.4
 
 =head1 SYNOPSIS
 

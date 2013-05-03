@@ -1,5 +1,8 @@
 Revision history for Entities
 
+0.4       2013-05-03 21:07:04 Asia/Jerusalem
+	- Small release bugfix
+
 0.3       2013-05-03 21:03:00 Asia/Jerusalem
 	- Updated to reflect changes introduced in Abilities v0.5
 	- Moved from Moose to Moo
