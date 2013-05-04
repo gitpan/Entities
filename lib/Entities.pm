@@ -1,6 +1,6 @@
 package Entities;
 
-our $VERSION = "0.4";
+our $VERSION = "0.5";
 $VERSION = eval $VERSION;
 
 use Entities::User;
@@ -20,7 +20,7 @@ Entities - User management and authorization for web applications and subscripti
 
 =head1 VERSION
 
-version 0.4
+version 0.5
 
 =head1 SYNOPSIS
 

@@ -1,6 +1,6 @@
 package Entities::Role;
 
-our $VERSION = "0.4";
+our $VERSION = "0.5";
 $VERSION = eval $VERSION;
 
 use Carp;
@@ -17,7 +17,7 @@ Entities::Role - A collection of possibly related actions granted to users.
 
 =head1 VERSION
 
-version 0.4
+version 0.5
 
 =head1 SYNOPSIS
 

@@ -1,6 +1,6 @@
 package Entities::Backend;
 
-our $VERSION = "0.4";
+our $VERSION = "0.5";
 $VERSION = eval $VERSION;
 
 use Moo::Role;
@@ -14,7 +14,7 @@ Entities::Backend - A role providing storage for the Entities user-management/au
 
 =head1 VERSION
 
-version 0.4
+version 0.5
 
 =head1 SYNOPSIS
 

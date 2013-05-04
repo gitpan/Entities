@@ -1,6 +1,6 @@
 package Entities::Action;
 
-our $VERSION = "0.4";
+our $VERSION = "0.5";
 $VERSION = eval $VERSION;
 
 use Carp;
@@ -17,7 +17,7 @@ Entities::Action - A piece of code/functionality that a user entity can perform.
 
 =head1 VERSION
 
-version 0.4
+version 0.5
 
 =head1 SYNOPSIS
 

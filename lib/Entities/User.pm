@@ -1,6 +1,6 @@
 package Entities::User;
 
-our $VERSION = "0.4";
+our $VERSION = "0.5";
 $VERSION = eval $VERSION;
 
 use Carp;
@@ -19,7 +19,7 @@ Entities::User - A user entity that interacts with a web application.
 
 =head1 VERSION
 
-version 0.4
+version 0.5
 
 =head1 SYNOPSIS
 

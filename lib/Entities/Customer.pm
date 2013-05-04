@@ -1,6 +1,6 @@
 package Entities::Customer;
 
-our $VERSION = "0.4";
+our $VERSION = "0.5";
 $VERSION = eval $VERSION;
 
 use Carp;
@@ -19,7 +19,7 @@ Entities::Customer - An abstract entity that owns users and subscribes to plans.
 
 =head1 VERSION
 
-version 0.4
+version 0.5
 
 =head1 SYNOPSIS
 

@@ -1,6 +1,6 @@
 package Entities::Backend::Memory;
 
-our $VERSION = "0.4";
+our $VERSION = "0.5";
 $VERSION = eval $VERSION;
 
 use Carp;
@@ -18,7 +18,7 @@ Entities::Backend::Memory - A simple backend that stores all data in memory, for
 
 =head1 VERSION
 
-version 0.4
+version 0.5
 
 =head1 SYNOPSIS
 
